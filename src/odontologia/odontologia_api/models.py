@@ -17,7 +17,7 @@ class UserProfileManager(BaseUserManager):
         user = self.model(email=email, nombre=nombre)
 
         user.set_password(password)
-        user.save(using.self._db)
+        user.save(using=self._db)
 
         return user
 
@@ -46,12 +46,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD =  'email'
     REQUIRED_FIELDS = ['nombre']
 
-    def get_full_nombre(self):
+    def get_full_name(self):
         """ Funcion para obtener todo el nombre de usuario"""
 
         return self.nombre
 
-    def get_short_nombre(self):
+    def get_short_name(self):
         """Para obtener el solo el nombre"""
 
         return self.nombre
