@@ -51,6 +51,8 @@ class HelloApiView(APIView):
 
 class viewSets(viewsets.ViewSet):
 
+    serializer_class = serializers.HelloSerializer
+
     def list(self, request):
         a_viewset = [
             'Creando la lista',
@@ -58,3 +60,28 @@ class viewSets(viewsets.ViewSet):
         ]
 
         return Response({'message': 'Viewset','a_viewset':a_viewset})
+
+    def create(self, request):
+
+        serializer = serializers.HelloSerializer(data=request.data)
+
+        if serializer.is_valid():
+            nombre = serializer.data.get('nombre')
+            message = 'Hola {0}'.format(nombre)
+            return Response({'message': message})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        """ Recupero el objeto que necesito por ID"""
+
+        return Response({'http_method': 'GET'})
+
+    def update(self, request, pk=None):
+        return Response({'htttp_method': 'PUT'})
+
+    def partial_update(self, request, pk=None):
+        return Response({'http_method':'PATCH'})
+
+    def destroy(self, request, pk=None):
+        return Response({'http_method': 'DELETE'})
