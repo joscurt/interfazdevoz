@@ -31,7 +31,7 @@ cd $PROJECT_BASE_PATH/odontology/src
 cp $PROJECT_BASE_PATH/odontology/deploy/supervisor_profiles_api.conf /etc/supervisor/conf.d/profiles_api.conf
 supervisorctl reread
 supervisorctl update
-supervisorctl restart profiles_api
+supervisorctl restart odontologia_api
 
 # Setup nginx to make our application accessible.
 cp $PROJECT_BASE_PATH/odontology/deploy/nginx_profiles_api.conf /etc/nginx/sites-available/profiles_api.conf
