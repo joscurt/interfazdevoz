@@ -22,7 +22,7 @@ git clone $PROJECT_GIT_URL $PROJECT_BASE_PATH/odontology
 mkdir -p $VIRTUALENV_BASE_PATH
 python3 -m venv $VIRTUALENV_BASE_PATH/odontologia_api
 
-$VIRTUALENV_BASE_PATH/odontology/bin/pip install -r $PROJECT_BASE_PATH/odontology/requirements.txt
+$VIRTUALENV_BASE_PATH/odontologia_api/bin/pip install -r $PROJECT_BASE_PATH/odontology/requirements.txt
 
 # Run migrations
 cd $PROJECT_BASE_PATH/odontology/src
