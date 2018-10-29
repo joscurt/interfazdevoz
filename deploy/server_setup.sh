@@ -28,15 +28,15 @@ $VIRTUALENV_BASE_PATH/odontologia_api/bin/pip install -r $PROJECT_BASE_PATH/odon
 cd $PROJECT_BASE_PATH/odontology/src
 
 # Setup Supervisor to run our uwsgi process.
-cp $PROJECT_BASE_PATH/odontology/deploy/supervisor_profiles_api.conf /etc/supervisor/conf.d/profiles_api.conf
+cp $PROJECT_BASE_PATH/odontology/deploy/supervisor_odontologia_api.conf /etc/supervisor/conf.d/odontologia_api.conf
 supervisorctl reread
 supervisorctl update
 supervisorctl restart odontologia_api
 
 # Setup nginx to make our application accessible.
-cp $PROJECT_BASE_PATH/odontology/deploy/nginx_profiles_api.conf /etc/nginx/sites-available/profiles_api.conf
+cp $PROJECT_BASE_PATH/odontology/deploy/nginx_odontologia_api.conf /etc/nginx/sites-available/odontologia_api.conf
 rm /etc/nginx/sites-enabled/default
-ln -s /etc/nginx/sites-available/profiles_api.conf /etc/nginx/sites-enabled/profiles_api.conf
+ln -s /etc/nginx/sites-available/odontologia_api.conf /etc/nginx/sites-enabled/odontologia_api.conf
 systemctl restart nginx.service
 
 echo "DONE! :)"
