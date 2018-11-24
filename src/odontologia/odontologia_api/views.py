@@ -10,10 +10,25 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import (ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView)
 
 from . import serializers
 from . import models
 from . import permisos
+
+
+
+class ProfileCreateView(CreateAPIView):
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfilesSerializer
+
+class ProfileUpdateView(UpdateAPIView):
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfilesSerializer
+
+class ProfileDeleteView(DestroyAPIView):
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfilesSerializer
 
 class HelloApiView(APIView):
     """Test API View."""
@@ -123,3 +138,7 @@ class UserProfileFeedViewSet(viewsets.ModelViewSet):
         """Seteo Usuario Logueado"""
 
         serializer.save(user_profile=self.request.user)
+
+class MenuList(viewsets.ModelViewSet):
+    queryset = models.Menu.objects.filter(parent__isnull=True)
+    serializer_class = serializers.MenuSerializer

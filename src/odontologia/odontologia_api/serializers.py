@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_recursive.fields import RecursiveField
 
 from . import models
 
@@ -34,3 +35,10 @@ class ProfileFeedItemSerializer(serializers.ModelSerializer):
         model = models.ProfileFeedItem
         fields = ('id','user_profile', 'status_text', 'created_on')
         extra_kwargs = {'user_profile':{'read_only': True}}
+
+class MenuSerializer(serializers.ModelSerializer):
+    children = RecursiveField(many=True)
+
+    class Meta:
+        model = models.Menu
+        fields = ('id', 'name', 'parent', 'children')

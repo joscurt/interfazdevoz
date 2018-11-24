@@ -72,3 +72,10 @@ class ProfileFeedItem(models.Model):
         """Retornar el string"""
 
         return self.status_text
+
+class Menu(models.Model):
+    name = models.CharField(max_length=50)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name

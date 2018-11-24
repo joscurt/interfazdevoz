@@ -19,4 +19,15 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    execute_from_command_line(sys.argv)
+    try:
+        if sys.argv[3] == 'react':
+            project_root = os.getcwd()
+            os.chdir(os.path.join(project_root, "frontend2"))
+            os.system("npm run build")
+            os.chdir(project_root)
+            sys.argv.pop(3)
+    except IndexError:
+        execute_from_command_line(sys.argv)
+    else:
+        execute_from_command_line(sys.argv)
+    # execute_from_command_line(sys.argv)
