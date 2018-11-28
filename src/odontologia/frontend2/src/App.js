@@ -1,46 +1,129 @@
 import React, { Component } from 'react';
-import annyang from 'annyang'
+// import annyang from 'annyang'
+import Artyom from 'artyom.js';
 // import logo from './logo.svg';
 import 'antd/dist/antd.css';
+import ArtyomCommandsManager from './components//ArtyomCommands.js';
 // import './App.css';
 
 // import MenuDataProvider from './DataProvider';
 // import MenuDisplay from './DataDisplay';
-import CustomLayout from './containers/Layout';
-import ArticleList from './containers/ArticleListView';
+// import CustomLayout from './containers/Layout';
+// import ArticleList from './containers/ArticleListView';
 // import Dictaphone from './containers/SpeechRecognition';
 
+const Jarvis = new Artyom();
+
 class App extends Component {
-  constructor() {
-    super();
-    this.state = { hola: false };
-  }
-  componentDidMount() {
-    if (annyang) {
-      // Let's define a command.
-      var commands = {
-        'Hola': () => this.setState({ hola: true })
-      };
+  constructor (props, context){
+          super(props, context);
 
-      // Add our commands to annyang
-      annyang.addCommands(commands);
+          // Add `this` context to the handler functions
+          this.startAssistant = this.startAssistant.bind(this);
+          this.stopAssistant = this.stopAssistant.bind(this);
+          this.speakText = this.speakText.bind(this);
+          this.handleTextareaChange = this.handleTextareaChange.bind(this);
 
-      // Start listening.
-      annyang.start();
-    }
-  }
-  render() {
-    return ( this.state.hola ? <div className="App"><DiHola /><CustomLayout><ArticleList />
-        </CustomLayout></div> : <div className="App"></div>
+          // Prepare simple state
+          this.state = {
+              artyomActive: false,
+              textareaValue: "",
+              artyomIsReading: false
+          };
 
-    );
-  }
+          // Load some commands to Artyom using the commands manager
+          let CommandsManager = new ArtyomCommandsManager(Jarvis);
+          CommandsManager.loadCommands();
+      }
+      startAssistant() {
+            let _this = this;
+
+            console.log("Artyom succesfully started !");
+
+            Jarvis.initialize({
+                lang: "es-ES",
+                debug: true,
+                continuous: true,
+                soundex: true,
+                listen: true
+            }).then(() => {
+                // Display loaded commands in the console
+                console.log(Jarvis.getAvailableCommands());
+
+                Jarvis.say("Hola, Como estas?");
+
+                _this.setState({
+                    artyomActive: true
+                });
+            }).catch((err) => {
+                console.error("Oopsy daisy, this shouldn't happen !", err);
+            });
+        }
+
+        stopAssistant() {
+            let _this = this;
+
+            Jarvis.fatality().then(() => {
+                console.log("Jarvis has been succesfully stopped");
+
+                _this.setState({
+                    artyomActive: false
+                });
+
+            }).catch((err) => {
+                console.error("Oopsy daisy, this shouldn't happen neither!", err);
+
+                _this.setState({
+                    artyomActive: false
+                });
+            });
+        }
+
+        speakText() {
+            let _this = this;
+
+            _this.setState({
+                artyomIsReading: true
+            });
+
+            // Speak text with Artyom
+            Jarvis.say( _this.state.textareaValue, {
+                onEnd() {
+                    _this.setState({
+                        artyomIsReading: false
+                    });
+                }
+            });
+        }
+
+        handleTextareaChange(event) {
+            this.setState({
+                textareaValue: event.target.value
+            });
+        }
+        render() {
+            return (
+                <div>
+                    <h1>Welcome to Jarvis Assistant</h1>
+
+                    <p>In this very basic assistant, you can say hello and ask for some reports e.g `Generate report of April of this year`</p>
+
+                    {/* Voice commands action buttons */}
+                    <input type="button" value="Start Artyom" disabled={this.state.artyomActive} onClick={this.startAssistant}/>
+                    <input type="button" value="Stop Artyom" disabled={!this.state.artyomActive} onClick={this.stopAssistant}/>
+
+                    {/* Speech synthesis Area */}
+
+                    <p>I can read some text for you if you want:</p>
+
+                    <textarea rows="5" onChange={this.handleTextareaChange} value={this.state.textareaValue}/>
+                    <br/>
+                    {/* Read the text inside the textarea with artyom */}
+                    <input type="button" value="Read Text" disabled={this.state.artyomIsReading} onClick={this.speakText}/>
+                </div>
+            )
+        }
+
 }
 
-
-class DiHola extends Component {
-  render() {
-    return <div>Hola, prueba de comandos.</div>;
-  }
-}
 export default App;

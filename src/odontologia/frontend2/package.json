@@ -5,6 +5,7 @@
   "dependencies": {
     "annyang": "^2.6.1",
     "antd": "^3.10.8",
+    "artyom.js": "^1.0.6",
     "axios": "^0.18.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
