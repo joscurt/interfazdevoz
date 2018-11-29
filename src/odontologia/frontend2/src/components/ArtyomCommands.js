@@ -1,4 +1,7 @@
 // ArtyomCommands.js
+ import CustomLayout from '../containers/Layout';
+ import ArticleList from '../containers/ArticleListView';
+
 export default class ArtyomCommandsManager {
 
     // The ArtyomCommandsManager class expects as argument in the constructor
@@ -27,7 +30,7 @@ export default class ArtyomCommandsManager {
                 }
             },
             {
-                indexes: ["Generate reports of * of this year"],
+                indexes: ["Generar Reporte de * de este año"],
                 smart: true,
                 action: (i, month) => {
                     let year = new Date().getFullYear();
@@ -36,7 +39,34 @@ export default class ArtyomCommandsManager {
 
                     Artyom.say("Ready ! What were you expecting? write some code you lazy bear !");
                 }
-            },
+              },
+              {
+                indexes: ["Seleccionar Pieza * "],
+                smart: true,
+                action: (i, num) => {
+                  let rNumbers = {
+                    num: num,
+                    nombre: 'Jose'
+                  }
+
+                  handleLangChange = () => {
+                      var lang = this.dropdown.value;
+                      this.props.onSelectLanguage(rNumbers);            
+                    }
+                  // this.props.sendData(num);
+
+                  console.log(rNumbers);
+                  if(num == 1){
+                    Artyom.say(`Estas en la pieza Dental numero ${num}`);
+                  }else{
+                    Artyom.say(`Pieza Incorrecta`);
+                  }
+
+
+                }
+              },
+
         ]);
     }
 }
+// export {rNumbers};

@@ -4,6 +4,7 @@ import Artyom from 'artyom.js';
 // import logo from './logo.svg';
 import 'antd/dist/antd.css';
 import ArtyomCommandsManager from './components//ArtyomCommands.js';
+// import {rNumbers} from './components//ArtyomCommands.js';
 // import './App.css';
 
 // import MenuDataProvider from './DataProvider';
@@ -17,28 +18,46 @@ const Jarvis = new Artyom();
 class App extends Component {
   constructor (props, context){
           super(props, context);
-
+          this.textInput = React.createRef();
           // Add `this` context to the handler functions
           this.startAssistant = this.startAssistant.bind(this);
           this.stopAssistant = this.stopAssistant.bind(this);
           this.speakText = this.speakText.bind(this);
           this.handleTextareaChange = this.handleTextareaChange.bind(this);
+          this.textRender = this.textRender.bind(this);
+          this.getData = this.getData.bind(this);
+
+          // this.redirectRecognizedTextOutput = this.redirectRecognizedTextOutput.bind(this);
 
           // Prepare simple state
           this.state = {
               artyomActive: false,
               textareaValue: "",
-              artyomIsReading: false
+              artyomIsReading: false,
+              textValue: ""
           };
 
           // Load some commands to Artyom using the commands manager
           let CommandsManager = new ArtyomCommandsManager(Jarvis);
           CommandsManager.loadCommands();
+
+          console.log(CommandsManager.loadCommands());
+
       }
+
+
       startAssistant() {
             let _this = this;
 
             console.log("Artyom succesfully started !");
+
+            // var commands = Jarvis.getAvailableCommands();
+            //
+            // for(var i = 0;i < commands.length;i++){
+            //     var command = commands[i];
+            //     console.log(command);
+            //     // console.log(command.indexOf());
+            //   }
 
             Jarvis.initialize({
                 lang: "es-ES",
@@ -49,8 +68,17 @@ class App extends Component {
             }).then(() => {
                 // Display loaded commands in the console
                 console.log(Jarvis.getAvailableCommands());
+                console.log(Jarvis.getProperties());
+                // Jarvis.say("Hola, Como estas?");
 
-                Jarvis.say("Hola, Como estas?");
+                // var commands = Jarvis.getAvailableCommands();
+                // // console.log(commands);
+                //
+                // for(var i = 0;i < commands.length;i++){
+                //     var command = commands[i];
+                //     console.log(command);
+                //     // console.log(command.indexOf());
+                //   }
 
                 _this.setState({
                     artyomActive: true
@@ -101,11 +129,31 @@ class App extends Component {
                 textareaValue: event.target.value
             });
         }
+        componentDidMount(){
+          this.textRender();
+          this.textInput.current.focus();
+        }
+        getData(val){
+            // do not forget to bind getData in constructor
+            console.log(val);
+        }
+        textRender(text) {
+          Jarvis.redirectRecognizedTextOutput((text,isFinal) => {
+        			if (isFinal) {
+        			}else{
+                  this.setState({
+                      textValue: text
+                });
+        			}
+        		});
+          }
+
         render() {
+          console.log(this.props);
             return (
                 <div>
                     <h1>Welcome to Jarvis Assistant</h1>
-
+                   <input id="salida" ref={this.textInput} style={{width: 400 + 'px'}} value={this.state.textValue}/>
                     <p>In this very basic assistant, you can say hello and ask for some reports e.g `Generate report of April of this year`</p>
 
                     {/* Voice commands action buttons */}
