@@ -48,14 +48,7 @@ export default class ArtyomCommandsManager {
                     num: num,
                     nombre: 'Jose'
                   }
-
-                  handleLangChange = () => {
-                      var lang = this.dropdown.value;
-                      this.props.onSelectLanguage(rNumbers);            
-                    }
-                  // this.props.sendData(num);
-
-                  console.log(rNumbers);
+                console.log(rNumbers);
                   if(num == 1){
                     Artyom.say(`Estas en la pieza Dental numero ${num}`);
                   }else{

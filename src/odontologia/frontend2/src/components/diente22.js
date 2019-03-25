@@ -17,7 +17,7 @@ import { Form, Input, Button, Radio, Row, Col, Switch, Icon } from 'antd';
 const FormItem = Form.Item;
 const Jarvis = new Artyom();
 
-class CustomForm extends Component {
+class CustomForm22 extends Component {
 
   constructor (props, context){
           super(props, context);
@@ -754,8 +754,8 @@ if(this.state.finalizar == "medición"){
     {  /*onSubmit={(event) => this.handleFormSubmit(event)*/ }
 
         <div className="gutter-example">
-        <h1>Pieza dental 1.1 por vestibular</h1>
-        <img src={require('../images/periodontograma-dientes-arriba-11.png')} />
+        <h1>Pieza dental 2.2 por vestibular</h1>
+        <img src={require('../images/periodontograma-dientes-arriba-18.png')} />
         <Row gutter={32}>
           <Col className="gutter-row" span={6}>
           <div className="gutter-box">
@@ -844,4 +844,4 @@ if(this.state.finalizar == "medición"){
 
 // CustomForm.propTypes = propTypes
 // export default SpeechRecognition(CustomForm);
-export default CustomForm;
+export default CustomForm22;

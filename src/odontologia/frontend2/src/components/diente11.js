@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import axios from 'axios';
 import Artyom from 'artyom.js';
-import App from '../App';
 // import SpeechRecognition from 'react-speech-recognition'
 
 import { Form, Input, Button, Radio, Row, Col, Switch, Icon } from 'antd';
@@ -17,7 +16,7 @@ import { Form, Input, Button, Radio, Row, Col, Switch, Icon } from 'antd';
 const FormItem = Form.Item;
 const Jarvis = new Artyom();
 
-class CustomForm extends Component {
+class CustomForm11 extends Component {
 
   constructor (props, context){
           super(props, context);
@@ -62,9 +61,6 @@ class CustomForm extends Component {
           // console.log(CommandsManager.loadCommands());
 
       }
-      handleChange(event) {
-        this.setState({numValueP4: event.target.value})
-      }
       handleFormLayoutChange = (e) => {
         this.setState({ formLayout: e.target.value });
       }
@@ -78,7 +74,6 @@ class CustomForm extends Component {
             //     console.log(command);
             //     // console.log(command.indexOf());
             //   }
-
 
             Jarvis.initialize({
                 lang: "es-ES",
@@ -98,11 +93,11 @@ class CustomForm extends Component {
           tipoMedicion(){
              Jarvis.newPrompt({
                  question: "Qué desea medir?",
-                 options:["profundidad de sondaje","margen gingival", "sangrado","un día de sondaje","pues un día es sondaje"],
+                 options:["profundidad de sondaje","margen gingival", "sangrado"],
                  onMatch: (i) => {
                     let action;
 
-                    if(i == 0 || i == 3 || i == 4){
+                    if(i == 0){
                         action = () => {
                              this.profPrompt();
                         }
@@ -128,7 +123,7 @@ class CustomForm extends Component {
             Jarvis.newPrompt({
                 question: "Estas en el sangrado",
                 smart: true,
-                options:["sangrado *", "medir profundidad *", "medir margen *","finalizar *"],
+                options:["sangrado *", "medir profundidad *", "medir margen *"],
                 // i returns the index of the given options
                 onMatch: (i, val1) => {
                     let action;
@@ -138,20 +133,17 @@ class CustomForm extends Component {
                     // Paste
                     if(i == 0){
                         action = () => {
-
+                          this.setState({
+                              sangValue: val1
+                            });
                           console.log(val1);
                           if(val1 == "positivo"){
-
-                            this.setState({
-                                sangValue: val1
-                              });
-
                             Jarvis.say(`La piesa dental tiene sangrado ${val1}`,{
                               onStart() {
-                                  console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             let _this = this;
@@ -160,10 +152,10 @@ class CustomForm extends Component {
                           }else{
                             Jarvis.say(`Valor incorrecto`,{
                               onStart() {
-                                  console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             this.sangPrompt();
@@ -177,22 +169,7 @@ class CustomForm extends Component {
                     if(i == 2){
                       this.margenPrompt();
                     }
-                    if(i == 3){
-                        this.setState({
-                                finalizar: val1
-                              });
-                              if (typeof val1 !== 'undefined' && val1 !== null && val1 == "medición"){
 
-                              Jarvis.say(`La medición de la pieza dental ha sido finalisada`);
-                              Jarvis.fatality().then(() => {
-                                  console.log("Jarvis has been succesfully stopped");
-                              }).catch((err) => {
-                                  console.error("Oopsy daisy, this shouldn't happen neither!", err);
-                              });
-                              }else{
-                                Jarvis.say(`Valor incorrecto, deseas finalizar?`);
-                              }
-                        }
                     // A function needs to be returned in onMatch event
                     // in order to accomplish what you want to execute
                     return action;
@@ -207,7 +184,7 @@ class CustomForm extends Component {
              Jarvis.newPrompt({
                  question: "Estas midiendo la profundidad del sondaje",
                  smart: true,
-                 options:["Distal *","Messi al *","medial *", "medir margen *","medir sangrado *","finalizar *"],
+                 options:["Distal *","Messi al *","medial *", "medir margen *","medir sangrado *"],
                  // i returns the index of the given options
                  onMatch: (i, num) => {
                      let action;
@@ -215,19 +192,21 @@ class CustomForm extends Component {
                      // Paste
                      if(i == 0){
                          action = () => {
-
+                           this.setState({
+                               numValueP1: num
+                             });
+                           let rNumbers = {
+                             num: num
+                           }
                            var num2 = Number(num);
                            console.log(num2);
                            if(Number.isInteger(num2)){
-                             this.setState({
-                                 numValueP1: num
-                               });
                              Jarvis.say(`La profundidad es ${num} Milímetros`,{
                                onStart() {
-                                   console.log("Comienzo del texto.");
+                                   Jarvis.dontObey();
                                },
                                onEnd() {
-                                   Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                   Jarvis.obey();
                                }
                              });
                              let _this = this;
@@ -236,10 +215,10 @@ class CustomForm extends Component {
                            }else{
                              Jarvis.say(`Valor incorrecto`,{
                                onStart() {
-                                   console.log("Comienzo del texto.");
+                                   Jarvis.dontObey();
                                },
                                onEnd() {
-                                   Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                   Jarvis.obey();
                                }
                              });
                              this.profPrompt();
@@ -250,19 +229,22 @@ class CustomForm extends Component {
                      // Say
                      if(i == 1){
                          action = () => {
-
+                           this.setState({
+                               numValueP3: num
+                             });
+                           let rNumbers = {
+                             num: num
+                           }
+                         console.log(rNumbers);
                          var num2 = Number(num);
 
                            if(Number.isInteger(num2)){
-                             this.setState({
-                                 numValueP3: num
-                               });
                              Jarvis.say(`La profundidad es ${num2} Milímetros`,{
                                onStart() {
-                                   console.log("Comienzo del texto.");
+                                   Jarvis.dontObey();
                                },
                                onEnd() {
-                                   Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                   Jarvis.obey();
                                }
                              });
                              let _this = this;
@@ -271,10 +253,10 @@ class CustomForm extends Component {
                            }else{
                              Jarvis.say(`Valor incorrecto`,{
                                onStart() {
-                                   console.log("Comienzo del texto.");
+                                   Jarvis.dontObey();
                                },
                                onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                   Jarvis.obey();
                                }
                              });
                              this.profPrompt();
@@ -282,7 +264,9 @@ class CustomForm extends Component {
                          }
                      }
                      if(i == 2){
-
+                       this.setState({
+                           numValueP2: num
+                         });
                        let rNumbers = {
                          num: num
                        }
@@ -290,15 +274,12 @@ class CustomForm extends Component {
 
                        console.log(rNumbers);
                        if(Number.isInteger(num2)){
-                         this.setState({
-                             numValueP2: num
-                           });
                          Jarvis.say(`La profundidad es ${num2} Milímetros`,{
                            onStart() {
-                               console.log("Comienzo del texto.");
+                               Jarvis.dontObey();
                            },
                            onEnd() {
-                               Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                               Jarvis.obey();
                            }
                          });
                          let _this = this;
@@ -307,10 +288,10 @@ class CustomForm extends Component {
                        }else{
                          Jarvis.say(`Valor incorrecto`,{
                            onStart() {
-                               console.log("Comienzo del texto.");
+                               Jarvis.dontObey();
                            },
                            onEnd() {
-                               Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                               window.artyom.obey();
                            }
                          });
                          this.profPrompt();
@@ -322,22 +303,6 @@ class CustomForm extends Component {
                      if(i == 4){
                        this.sangPrompt();
                      }
-                     if(i == 5){
-                         this.setState({
-                                 finalizar: num
-                               });
-                               if (typeof num !== 'undefined' && num !== null && num == "medición"){
-
-                               Jarvis.say(`La medición de la pieza dental ha sido finalisada`);
-                               Jarvis.fatality().then(() => {
-                                   console.log("Jarvis has been succesfully stopped");
-                               }).catch((err) => {
-                                   console.error("Oopsy daisy, this shouldn't happen neither!", err);
-                               });
-                               }else{
-                                 Jarvis.say(`Valor incorrecto, deseas finalizar?`);
-                               }
-                      }
 
                      // A function needs to be returned in onMatch event
                      // in order to accomplish what you want to execute
@@ -352,7 +317,7 @@ class CustomForm extends Component {
             Jarvis.newPrompt({
                 question: "Estas midiendo El margen gingival",
                 smart: true,
-                options:["Distal *","Messi al *","medial *", "medir profundidad *","medir sangrado *","finalizar *"],
+                options:["Distal *","Messi al *","medial *", "medir profundidad *","medir sangrado *"],
                 // i returns the index of the given options
                 onMatch: (i, num) => {
                     let action;
@@ -360,22 +325,21 @@ class CustomForm extends Component {
                     // Paste
                     if(i == 0){
                         action = () => {
-
+                          this.setState({
+                              numValueP6: num
+                            });
                           let rNumbers = {
                             num: num
                           }
                           var num2 = Number(num);
                           console.log(num2);
                           if(Number.isInteger(num2)){
-                            this.setState({
-                                numValueP6: num
-                              });
                             Jarvis.say(`El margen es ${num} Milímetros`,{
                               onStart() {
-                                  console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             let _this = this;
@@ -384,10 +348,10 @@ class CustomForm extends Component {
                           }else{
                             Jarvis.say(`Valor incorrecto`,{
                               onStart() {
-                                  console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             this.margenPrompt();
@@ -398,7 +362,9 @@ class CustomForm extends Component {
                     // Say
                     if(i == 1){
                         action = () => {
-
+                          this.setState({
+                              numValueP4: num
+                            });
                           let rNumbers = {
                             num: num
                           }
@@ -406,15 +372,12 @@ class CustomForm extends Component {
                         var num2 = Number(num);
 
                           if(Number.isInteger(num2)){
-                            this.setState({
-                                numValueP4: num
-                              });
                             Jarvis.say(`El margen es ${num2} Milímetros`,{
                               onStart() {
-                                console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             let _this = this;
@@ -423,10 +386,10 @@ class CustomForm extends Component {
                           }else{
                             Jarvis.say(`Valor incorrecto`,{
                               onStart() {
-                                  console.log("Comienzo del texto.");
+                                  Jarvis.dontObey();
                               },
                               onEnd() {
-                                  Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                                  Jarvis.obey();
                               }
                             });
                             this.margenPrompt();
@@ -434,7 +397,9 @@ class CustomForm extends Component {
                         }
                     }
                     if(i == 2){
-
+                      this.setState({
+                          numValueP5: num
+                        });
                       let rNumbers = {
                         num: num
                       }
@@ -442,15 +407,12 @@ class CustomForm extends Component {
 
                       console.log(rNumbers);
                       if(Number.isInteger(num2)){
-                        this.setState({
-                            numValueP5: num
-                          });
                         Jarvis.say(`El margen es ${num2} Milímetros`,{
                           onStart() {
-                            console.log("Comienzo del texto.");
+                              Jarvis.dontObey();
                           },
                           onEnd() {
-                              Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                              Jarvis.obey();
                           }
                         });
                         let _this = this;
@@ -459,10 +421,10 @@ class CustomForm extends Component {
                       }else{
                         Jarvis.say(`Valor incorrecto`,{
                           onStart() {
-                              console.log("Comienzo del texto.");
+                              Jarvis.dontObey();
                           },
                           onEnd() {
-                              Jarvis.ArtyomWebkitSpeechRecognition.abort();
+                              Jarvis.obey();
                           }
                         });
                         this.margenPrompt();
@@ -474,22 +436,9 @@ class CustomForm extends Component {
                     if(i == 4){
                       this.sangPrompt();
                     }
-                    if(i == 5){
-                        this.setState({
-                                finalizar: num
-                              });
-                              if (typeof num !== 'undefined' && num !== null && num == "medición"){
 
-                              Jarvis.say(`La medición de la pieza dental ha sido finalisada`);
-                              Jarvis.fatality().then(() => {
-                                  console.log("Jarvis has been succesfully stopped");
-                              }).catch((err) => {
-                                  console.error("Oopsy daisy, this shouldn't happen neither!", err);
-                              });
-                              }else{
-                                Jarvis.say(`Valor incorrecto, deseas finalizar?`);
-                              }
-                            }
+                    // A function needs to be returned in onMatch event
+                    // in order to accomplish what you want to execute
                     return action;
                 }
             });
@@ -593,28 +542,7 @@ class CustomForm extends Component {
                     }
                   },
                   {
-                  indexes:["finalizar *"],
-                  smart: true,
-                  action: (i, num) => {
-                    this.setState({
-                            finalizar: num
-                          });
-                          if (typeof num !== 'undefined' && num !== null && num == "medición"){
-
-                          Jarvis.say(`La medición de la pieza dental ha sido finalisada`);
-                          Jarvis.fatality().then(() => {
-                              console.log("Jarvis has been succesfully stopped");
-                          }).catch((err) => {
-                              console.error("Oopsy daisy, this shouldn't happen neither!", err);
-                          });
-                          }
-                          else{
-                            Jarvis.say(`Valor incorrecto, deseas finalizar?`);
-                          }
-                        }
-                  },
-                  {
-                  indexes:["iniciar medición"],
+                  indexes:["Iniciar medición"],
                   action: () => {
                       this.tipoMedicion();
                     }
@@ -642,19 +570,11 @@ class CustomForm extends Component {
                   ]);
                 }
       componentDidMount(){
+
         this.loadCommands2();
         this.startAssistant();
       }
-      // shouldComponentUpdate(nextProps, nextState){
-      //   console.log('componentWillReceiveProps', nextProps, nextState);
-      //   // if (this.state.numValueP4 !== nextState.numValueP4) {
-      //   //   console.log('Probando');
-      //   //   return true;
-      //   // }
-      //   // this.state.numValueP4;
-      //   // this.state.numValueP5;
-      //   // this.state.numValueP6;
-      // }
+
       textRender1(text) {
         Jarvis.redirectRecognizedTextOutput((text,isFinal) => {
             if (isFinal) {
@@ -743,19 +663,15 @@ class CustomForm extends Component {
     // if (!browserSupportsSpeechRecognition) {
     //   return null
     // }
-if(this.state.finalizar == "medición"){
-  return(
-    <App />
-  );
-}else{
+
     return (
       <div>
       <Form>
     {  /*onSubmit={(event) => this.handleFormSubmit(event)*/ }
 
         <div className="gutter-example">
-        <h1>Pieza dental 1.1 por vestibular</h1>
-        <img src={require('../images/periodontograma-dientes-arriba-11.png')} />
+        <h1>Pieza dental 1.2 por vestibular</h1>
+        <img src={require('../images/periodontograma-dientes-arriba-18.png')} />
         <Row gutter={32}>
           <Col className="gutter-row" span={6}>
           <div className="gutter-box">
@@ -768,7 +684,7 @@ if(this.state.finalizar == "medición"){
               <h2>Medial :</h2>
             </div>
             <div className="gutter-box">
-              <h2>Distal :</h2>
+              <h2>Sangrado :</h2>
             </div>
           </Col>
           <Col style={(prof == 1) ? divStyle : divStyle2} className="gutter-row" span={6}>
@@ -797,17 +713,17 @@ if(this.state.finalizar == "medición"){
             </div>
             <div className="gutter-box">
               <FormItem>
-                <Input name="mesialmar"  value={this.state.numValueP4} onChange={this.handleChange.bind(this)} placeholder=""/>
+                <Input name="mesialmar"  value={this.state.numValueP4} placeholder=""/>
               </FormItem>
             </div>
             <div className="gutter-box">
               <FormItem>
-                <Input name="medialmar" value={this.state.numValueP5} onChange={this.handleChange.bind(this)} placeholder=""/>
+                <Input name="medialmar" value={this.state.numValueP5} placeholder=""/>
               </FormItem>
             </div>
             <div className="gutter-box">
               <FormItem>
-                <Input name="distalmar" value={this.state.numValueP6} onChange={this.handleChange.bind(this)} placeholder=""/>
+                <Input name="distalmar" value={this.state.numValueP6} placeholder=""/>
               </FormItem>
             </div>
           </Col>
@@ -817,7 +733,7 @@ if(this.state.finalizar == "medición"){
             </div>
             <div className="gutter-box">
               <FormItem>
-                <Input name="distalsan" value={this.state.sangValue} onChange={this.handleChange.bind(this)} placeholder=""/>
+                <Input name="distalsan" value={this.state.sangValue} placeholder=""/>
               </FormItem>
               {(sang == 'positivo') ?
               (<Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="close" />} defaultChecked />
@@ -838,10 +754,9 @@ if(this.state.finalizar == "medición"){
     </Form>
     </div>
     );
-    }
   }
 }
 
 // CustomForm.propTypes = propTypes
 // export default SpeechRecognition(CustomForm);
-export default CustomForm;
+export default CustomForm11;

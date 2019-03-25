@@ -34,9 +34,11 @@ class ArticleList extends React.Component{
   render(){
     return(
       <div>
+      {/*
         <Articles data={this.state.articles} />
-        <br />
-        <h2>Crea un Usuario</h2>
+         <br />
+         <h2>Crea un Usuario</h2>
+         */}
         <CustomForm
           requestType="post"
           btnText="Crear"
